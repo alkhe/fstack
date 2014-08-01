@@ -7,6 +7,12 @@
 		_ = require('lodash');
 
 	_.extend(fstack, {
+		checkFile: function(path, callback) {
+			
+		},
+		checkDir: function(path, callback) {
+
+		},
 		ents: function(path, callback) {
 			fs.stat(path, function(err, stat) {
 				if (err)
