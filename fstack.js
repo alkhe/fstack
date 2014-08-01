@@ -2,6 +2,7 @@
 
 	var fs = require('fs'),
 		path = require('path'),
+		os = require('os'),
 		async = require('async'),
 		_ = require('lodash');
 
@@ -110,6 +111,6 @@
 					callback(err, JSON.parse(data));
 			});
 		}
-	});
+	}, path, os);
 
 })(module.exports);
