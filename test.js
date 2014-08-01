@@ -1,6 +1,6 @@
 var fstack = require('./fstack');
 
-fstack.files('.s', function(err, files) {
+/*fstack.files('.s', function(err, files) {
 	console.log('files:');
 	console.log(files);
 
@@ -13,6 +13,18 @@ fstack.files('.s', function(err, files) {
 			console.log(ents);
 		});
 	});
+});*/
+
+/*fstack.readStream('fstack.js', function(err, stream) {
+	stream.pipe(process.stdout);
+});*/
+
+/*fstack.read('fstack.js', function(err, data) {
+	console.log(data.toString());
+});*/
+
+fstack.json('test', function(err, data) {
+	console.log(data);
 });
 
 
