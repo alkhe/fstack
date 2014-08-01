@@ -8,16 +8,34 @@
 
 	_.extend(fstack, {
 		checkFile: function(path, callback) {
-			
-		},
-		checkDir: function(path, callback) {
-
-		},
-		ents: function(path, callback) {
 			fs.stat(path, function(err, stat) {
 				if (err)
 					return callback(err);
-				if (stat && stat.isDirectory()) {
+				if (stat && !stat.isDirectory())
+					callback(err, stat);
+				else if (stat)
+					return callback(new Error('not-file'));
+				else
+					return callback(new Error('not-found'));
+			});
+		},
+		checkDir: function(path, callback) {
+			fs.stat(path, function(err, stat) {
+				if (err)
+					return callback(err);
+				if (stat && stat.isDirectory())
+					callback(err, stat);
+				else if (stat)
+					return callback(new Error('not-directory'));
+				else
+					return callback(new Error('not-found'));
+			});
+		},
+		ents: function(path, callback) {
+			fstack.checkDir(path, function(err, stat) {
+				if (err)
+					return callback(err);
+				if (stat)
 					fs.readdir(path, function(err, ents) {
 						if (err)
 							return callback(err);
@@ -25,11 +43,6 @@
 							callback(err, _.zipObject(ents, stats));
 						});
 					});
-				}
-				else if (stat)
-					callback(new Error('not-directory'));
-				else
-					callback(new Error('not-found'));
 			});
 		},
 		dirs: function(path, callback) {
@@ -47,63 +60,43 @@
 			});
 		},
 		read: function(path, callback) {
-			fs.stat(path, function(err, stat) {
+			fstack.checkFile(path, function(err, stat) {
 				if (err)
 					return callback(err);
-				if (stat && !stat.isDirectory())
+				if (stat)
 					fs.readFile(path, callback);
-				else if (stat)
-					callback(new Error('not-file'));
-				else
-					callback(new Error('not-found'));
-			});	
+			});
 		},
 		readStream: function(path, callback) {
-			fs.stat(path, function(err, stat) {
+			fstack.checkFile(path, function(err, stat) {
 				if (err)
 					return callback(err);
-				if (stat && !stat.isDirectory())
+				if (stat)
 					callback(null, fs.createReadStream(path));
-				else if (stat)
-					callback(new Error('not-file'));
-				else
-					callback(new Error('not-found'));
-			});	
+			});
 		},
 		write: function(path, data, callback) {
-			fs.stat(path, function(err, stat) {
+			fstack.checkFile(path, function(err, stat) {
 				if (err)
 					return callback(err);
-				if (stat && !stat.isDirectory())
+				if (stat)
 					fs.write(path, data, callback);
-				else if (stat)
-					callback(new Error('not-file'));
-				else
-					callback(new Error('not-found'));
-			});	
+			});
 		},
 		writeStream: function(path, callback) {
-			fs.stat(path, function(err, stat) {
+			fstack.checkFile(path, function(err, stat) {
 				if (err)
 					return callback(err);
-				if (stat && !stat.isDirectory())
+				if (stat)
 					callback(null, fs.createWriteStream(path));
-				else if (stat)
-					callback(new Error('not-file'));
-				else
-					callback(new Error('not-found'));
-			});	
+			});
 		},
 		append: function(path, data, callback) {
-			fs.stat(path, function(err, stat) {
+			fstack.checkFile(path, function(err, stat) {
 				if (err)
 					return callback(err);
-				if (stat && !stat.isDirectory())
+				if (stat)
 					fs.appendFile(path, data, callback);
-				else if (stat)
-					callback(new Error('not-file'));
-				else
-					callback(new Error('not-found'));
 			});
 		},
 		json: function(path, callback, explicit) {
