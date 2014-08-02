@@ -149,7 +149,7 @@
 			fstack.checkFile(path, function(err) {
 				if (err)
 					return callback(err);
-				callback(null, fs.createReadStream(path));
+				callback(err, fs.createReadStream(path));
 			});
 		},
 		write: function(path, data, callback) {
@@ -163,7 +163,7 @@
 			fstack.checkFile(path, function(err) {
 				if (err)
 					return callback(err);
-				callback(null, fs.createWriteStream(path));
+				callback(err, fs.createWriteStream(path));
 			});
 		},
 		append: function(path, data, callback) {
