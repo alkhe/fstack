@@ -12,8 +12,6 @@
 					return 'file';
 				case constants.S_IFDIR:
 					return 'directory';
-				case constants.S_IFDIR:
-					return 'directory';
 				case constants.S_IFBLK:
 					return 'block-device';
 				case constants.S_IFCHR:
