@@ -1,4 +1,4 @@
-var fstack = require('./fstack'),
+var fstack = require('../fstack'),
 	async = require('async'),
 	util = require('util');
 
