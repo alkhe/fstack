@@ -3,7 +3,7 @@ fstack
 
 A lightweight and efficient driver stack to easily manage and maintain a filesystem.
 
-`fstack` provides a simple and optimized interface for accessing a filesystem and deriving logical structures by utilizing the `fs` core library. `fstack` also extends `path` and `os`, for convenience.
+`fstack` provides a simple and optimized interface for accessing a filesystem and deriving logical structures by utilizing the `fs` core library. `fstack` can is designed to replace other npm packages such as `mkdirp`, `file`, and `node-dir`. `fstack` also extends `path` and `os`, for convenience.
 
 ### fstack#ents
 `fstack.ents(path, callback)` will return all of the immediate child entities inside `path` and callback with `(err, ents)`, where `ents` is an associative array containing entity names as keys and stats as values.
