@@ -4,7 +4,30 @@
 		_path = require('path'),
 		os = require('os'),
 		async = require('async'),
-		_ = require('lodash');
+		_ = require('lodash'),
+		constants = require('constants'),
+		statMode = function(mode) {
+			switch (mode) {
+				case constants.S_IFREG:
+					return 'file';
+				case constants.S_IFDIR:
+					return 'directory';
+				case constants.S_IFDIR:
+					return 'directory';
+				case constants.S_IFBLK:
+					return 'block-device';
+				case constants.S_IFCHR:
+					return 'char-device';
+				case constants.S_IFLNK:
+					return 'link';
+				case constants.S_IFIFO:
+					return 'fifo';
+				case constants.S_IFSOCK:
+					return 'socket';
+				default:
+					return 'unknown';
+			}
+		};
 
 	_.extend(fstack, {
 		checkFile: function(path, callback) {
@@ -83,7 +106,7 @@
 					fstack.dirs(path, function(err, dirs) {
 						async.map(_.keys(dirs), function(dir, cb) {
 								fstack.fsn(_path.join(path, dir), function(err, d) {
-									o[dir] = d;
+									o[dir] = d ;
 									cb(err);
 								});
 							},
@@ -95,8 +118,12 @@
 				function(next) {
 					fstack.files(path, function(err, files) {
 						async.map(_.keys(files), function(file, cb) {
-								o[file] = 0;
-								cb(err);
+								fstack.device(_path.join(path, file), function(err, statmode) {
+									o[file] = statmode;
+									cb(err);
+								});
+								/*o[file] = 0;
+								cb(err);*/
 							},
 							function(err) {
 								next();
@@ -106,6 +133,14 @@
 			], function(err) {
 				if (callback)
 					callback(err, o);
+			});
+		},
+		device: function(path, callback) {
+			fstack.checkFile(path, function(err, stat) {
+				if (err)
+					return callback(err);
+				if (stat)
+					callback(err, statMode(stat.mode & constants.S_IFMT));
 			});
 		},
 		read: function(path, callback) {
