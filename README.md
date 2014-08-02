@@ -39,7 +39,7 @@ Device types are `file`, `directory`, `block-device`, `char-device`, `link`, `fi
 
 
 ### fstack#json
-`fstack.json(path, callback, explicit)` will read the json from `path` if it is a file. `explicit` defaults to `false`, where it may append `'.json'` to the supplied `path`. `fstack#json(path, callback, explicit)` will callback with `(err, json)`, where `json` is the parsed object for the file at `path`.
+`fstack.json(path, callback, explicit)` will read the json from `path` if it is a file. `explicit` defaults to `false`, where it may append `'.json'` to the supplied `path` so that the file may be accessed without requiring the `'.json'` extension. `fstack#json(path, callback, explicit)` will callback with `(err, json)`, where `json` is the parsed object for the file at `path`.
 
 
 ### fstack#read
