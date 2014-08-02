@@ -52,7 +52,7 @@ Device types are `file`, `directory`, `block-device`, `char-device`, `link`, `fi
 
 
 ### fstack.read(path, callback)
-`fstack.read` behaves the same way as `fs.readFile`, but first performs a check to see whether the supplied file exists.
+`fstack#read` behaves the same way as `fs#readFile`, but first performs a check to see whether the supplied file exists.
 
 
 ### fstack.readStream(path, callback)
@@ -60,7 +60,7 @@ Device types are `file`, `directory`, `block-device`, `char-device`, `link`, `fi
 
 
 ### fstack.write(path, callback)
-`fstack#write` behaves the same way as `fs.write`, but first performs a check to see whether the supplied file exists.
+`fstack#write` behaves the same way as `fs#write`, but first performs a check to see whether the supplied file exists.
 
 
 ### fstack.writeStream(path, callback)
@@ -68,4 +68,4 @@ Device types are `file`, `directory`, `block-device`, `char-device`, `link`, `fi
 
 
 ### fstack.append(path, callback)
-`fstack#append` behaves the same way as `fs.append`, but first performs a check to see whether the supplied file exists.
+`fstack#append` behaves the same way as `fs#append`, but first performs a check to see whether the supplied file exists.
