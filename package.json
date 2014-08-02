@@ -9,7 +9,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "test.js"
+    "test": "test/test.js"
   },
   "repository": {
     "type": "git",
