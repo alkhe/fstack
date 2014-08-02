@@ -3,9 +3,9 @@
 	var fs = require('fs'),
 		_path = require('path'),
 		os = require('os'),
+		constants = require('constants'),
 		async = require('async'),
 		_ = require('lodash'),
-		constants = require('constants'),
 		statMode = function(mode) {
 			switch (mode) {
 				case constants.S_IFREG:
@@ -58,16 +58,15 @@
 			fstack.checkDir(path, function(err, stat) {
 				if (err)
 					return callback(err);
-				if (stat)
-					fs.readdir(path, function(err, ents) {
-						if (err)
-							return callback(err);
-						async.map(ents, function(ent, cb) {
-							fs.stat(_path.join(path.length ? path : '.', ent), cb);
-						}, function(err, stats) {
-							callback(err, _.zipObject(ents, stats));
-						});
+				fs.readdir(path, function(err, ents) {
+					if (err)
+						return callback(err);
+					async.map(ents, function(ent, cb) {
+						fs.stat(_path.join(path.length ? path : '.', ent), cb);
+					}, function(err, stats) {
+						callback(err, _.zipObject(ents, stats));
 					});
+				});
 			});
 		},
 		dirs: function(path, callback) {
@@ -92,10 +91,9 @@
 			fstack.checkDir(path, function(err, stat) {
 				if (err)
 					return callback(err);
-				if (stat)
-					fstack.fsn(path, function(err, o) {
-						callback(err, o);
-					});
+				fstack.fsn(path, function(err, o) {
+					callback(err, o);
+				});
 			});
 		},
 		fso: this.fst,
@@ -122,8 +120,6 @@
 									o[file] = statmode;
 									cb(err);
 								});
-								/*o[file] = 0;
-								cb(err);*/
 							},
 							function(err) {
 								next();
@@ -139,48 +135,42 @@
 			fstack.checkFile(path, function(err, stat) {
 				if (err)
 					return callback(err);
-				if (stat)
-					callback(err, statMode(stat.mode & constants.S_IFMT));
+				callback(err, statMode(stat.mode & constants.S_IFMT));
 			});
 		},
 		read: function(path, callback) {
-			fstack.checkFile(path, function(err, stat) {
+			fstack.checkFile(path, function(err) {
 				if (err)
 					return callback(err);
-				if (stat)
-					fs.readFile(path, callback);
+				fs.readFile(path, callback);
 			});
 		},
 		readStream: function(path, callback) {
-			fstack.checkFile(path, function(err, stat) {
+			fstack.checkFile(path, function(err) {
 				if (err)
 					return callback(err);
-				if (stat)
-					callback(null, fs.createReadStream(path));
+				callback(null, fs.createReadStream(path));
 			});
 		},
 		write: function(path, data, callback) {
-			fstack.checkFile(path, function(err, stat) {
+			fstack.checkFile(path, function(err) {
 				if (err)
 					return callback(err);
-				if (stat)
-					fs.write(path, data, callback);
+				fs.write(path, data, callback);
 			});
 		},
 		writeStream: function(path, callback) {
-			fstack.checkFile(path, function(err, stat) {
+			fstack.checkFile(path, function(err) {
 				if (err)
 					return callback(err);
-				if (stat)
-					callback(null, fs.createWriteStream(path));
+				callback(null, fs.createWriteStream(path));
 			});
 		},
 		append: function(path, data, callback) {
-			fstack.checkFile(path, function(err, stat) {
+			fstack.checkFile(path, function(err) {
 				if (err)
 					return callback(err);
-				if (stat)
-					fs.appendFile(path, data, callback);
+				fs.appendFile(path, data, callback);
 			});
 		},
 		json: function(path, callback, explicit) {

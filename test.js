@@ -3,7 +3,7 @@ var fstack = require('./fstack'),
 	util = require('util');
 
 async.series([
-	/*function(next) {
+	function(next) {
 		fstack.files('.', function(err, files) {
 			console.log('files:');
 			console.log(files);
@@ -19,7 +19,6 @@ async.series([
 	},
 	function(next) {
 		fstack.ents('.', function(err, ents) {
-			console.log(err);
 			console.log('ents: ');
 			console.log(ents);
 			next();
@@ -40,7 +39,7 @@ async.series([
 	function(next) {
 		console.log(fstack.tmpdir());
 		next();
-	},*/
+	},
 	function(next) {
 		fstack.fst('.', function(err, fso) {
 			if (err)
