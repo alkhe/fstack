@@ -87,49 +87,55 @@
 				}));
 			});
 		},
-		fst: function(path, callback) {
+		fst: function(path, callback, depth) {
 			fstack.checkDir(path, function(err, stat) {
 				if (err)
 					return callback(err);
 				fstack.fsn(path, function(err, o) {
 					callback(err, o);
-				});
+				}, depth);
 			});
 		},
 		fso: this.fst,
-		fsn: function(path, callback) {
+		fsn: function(path, callback, depth) {
 			var o = {};
-			async.parallel([
-				function(next) {
-					fstack.dirs(path, function(err, dirs) {
-						async.map(_.keys(dirs), function(dir, cb) {
-								fstack.fsn(_path.join(path, dir), function(err, d) {
-									o[dir] = d ;
-									cb(err);
-								});
-							},
-							function(err) {
-								next();
+			if (depth != 0) {
+				if (depth)
+					depth--;
+				async.parallel([
+					function(next) {
+						fstack.dirs(path, function(err, dirs) {
+							async.map(_.keys(dirs), function(dir, cb) {
+									fstack.fsn(_path.join(path, dir), function(err, d) {
+										o[dir] = d ;
+										cb(err);
+									}, depth);
+								},
+								function(err) {
+									next();
+							});
 						});
-					});
-				},
-				function(next) {
-					fstack.files(path, function(err, files) {
-						async.map(_.keys(files), function(file, cb) {
-								fstack.device(_path.join(path, file), function(err, statmode) {
-									o[file] = statmode;
-									cb(err);
-								});
-							},
-							function(err) {
-								next();
+					},
+					function(next) {
+						fstack.files(path, function(err, files) {
+							async.map(_.keys(files), function(file, cb) {
+									fstack.device(_path.join(path, file), function(err, statmode) {
+										o[file] = statmode;
+										cb(err);
+									});
+								},
+								function(err) {
+									next();
+							});
 						});
-					});
-				}
-			], function(err) {
-				if (callback)
-					callback(err, o);
-			});
+					}
+				], function(err) {
+					if (callback)
+						callback(err, o);
+				});
+			}
+			else
+				callback(null, o);
 		},
 		device: function(path, callback) {
 			fstack.checkFile(path, function(err, stat) {

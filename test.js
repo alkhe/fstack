@@ -48,6 +48,15 @@ async.series([
 				console.log(JSON.stringify(fso, null, 4));
 		});
 		next();
+	},
+	function(next) {
+		fstack.fst('.', function(err, fso) {
+			if (err)
+				console.log(err);
+			if (fso)
+				console.log(JSON.stringify(fso, null, 4));
+		}, 1);
+		next();
 	}
 ]);
 
