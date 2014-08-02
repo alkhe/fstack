@@ -3,6 +3,13 @@ var fstack = require('../fstack'),
 
 async.series([
 	function(next) {
+		fstack.ents('.', function(err, ents) {
+			console.log('ents: ');
+			console.log(ents);
+			next();
+		});
+	},
+	function(next) {
 		fstack.files('.', function(err, files) {
 			console.log('files:');
 			console.log(files);
@@ -13,13 +20,6 @@ async.series([
 		fstack.dirs('.', function(err, dirs) {
 			console.log('dirs: ');
 			console.log(dirs);
-			next();
-		});
-	},
-	function(next) {
-		fstack.ents('.', function(err, ents) {
-			console.log('ents: ');
-			console.log(ents);
 			next();
 		});
 	},
@@ -43,23 +43,21 @@ async.series([
 		fstack.fst('.', function(err, fso) {
 			if (err)
 				console.log(err);
-			if (fso)
-				console.log(JSON.stringify(fso, null, 4));
+			console.log(JSON.stringify(fso, null, 4));
+			next();
 		});
-		next();
 	},
 	function(next) {
 		fstack.fst('.', function(err, fso) {
 			if (err)
 				console.log(err);
-			if (fso)
-				console.log(JSON.stringify(fso, null, 4));
+			console.log(JSON.stringify(fso, null, 4));
+			next();
 		}, 1);
-		next();
 	},
 	function(next) {
 		fstack.mkdirp('b/c/d/e', function(err) {
-
+			
 		});
 	}
 ]);

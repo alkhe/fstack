@@ -30,26 +30,22 @@
 	_.extend(fstack, {
 		checkFile: function(path, callback) {
 			fs.stat(path, function(err, stat) {
-				if (err)
-					return callback(err);
 				if (stat && !stat.isDirectory())
 					callback(err, stat);
 				else if (stat)
 					return callback(new Error('not-file'));
 				else
-					return callback(new Error('not-found'));
+					return callback(err || new Error('not-found'));
 			});
 		},
 		checkDir: function(path, callback) {
 			fs.stat(path, function(err, stat) {
-				if (err)
-					return callback(err);
 				if (stat && stat.isDirectory())
 					callback(err, stat);
 				else if (stat)
 					return callback(new Error('not-directory'));
 				else
-					return callback(new Error('not-found'));
+					return callback(err || new Error('not-found'));
 			});
 		},
 		ents: function(path, callback) {
@@ -60,7 +56,7 @@
 					if (err)
 						return callback(err);
 					async.map(ents, function(ent, cb) {
-						fs.stat(fstack.join(path.length ? path : '.', ent), cb);
+						fs.stat(fstack.join(path.length ? path : '', ent), cb);
 					}, function(err, stats) {
 						callback(err, _.zipObject(ents, stats));
 					});
