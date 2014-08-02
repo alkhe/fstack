@@ -20,6 +20,7 @@ A lightweight and efficient driver stack to easily manage and maintain a filesys
 ### fstack#fst
 `fstack.fst(path, callback, [depth])` will callback with `(err, o)`, where `o` is an object representing the filesystem with `path` as the root node. `depth` is the number of levels to recursively crawl the filesystem, and defaults to null, which does a complete crawl. Calling fstack#fst with a `depth` of 1 or 2 is a good strategy for returning an object that will represent a filesystem client-side. Directories will contain an object representing its children, while non-directories will contain their device types, which is usually `'file'`.
 
+
 ### fstack#fso
 Alias of fstack#fst.
 
@@ -28,6 +29,14 @@ Alias of fstack#fst.
 `fstack.device(path, callback)` will check the device type of `path` and callback with `(err, mode)`, where `mode` is the determined device type of `path`.
 
 Device types are `file`, `directory`, `block-device`, `char-device`, `link`, `fifo`, `socket`, and `unknown`.
+
+
+### fstack#mkdir
+`fstack.mkdir(path, callback)` will create the directory `path` if it does not already exist, and callback with `(err)`.
+
+
+### fstack#mkdirp
+`fstack.mkdirp(path, callback)` will recursively create each directory that leads to `path` if any do not already exist, and callback with `(err)`.
 
 
 ### fstack#checkFile
@@ -51,7 +60,7 @@ Device types are `file`, `directory`, `block-device`, `char-device`, `link`, `fi
 
 
 ### fstack#write
-`fstack.write` behaves the same way as `fs.write`, but first performs a check to see whether the supplied file exists.
+`fstack#write` behaves the same way as `fs.write`, but first performs a check to see whether the supplied file exists.
 
 
 ### fstack#writeStream
@@ -59,7 +68,7 @@ Device types are `file`, `directory`, `block-device`, `char-device`, `link`, `fi
 
 
 ### fstack#append
-`fstack.append` behaves the same way as `fs.append`, but first performs a check to see whether the supplied file exists.
+`fstack#append` behaves the same way as `fs.append`, but first performs a check to see whether the supplied file exists.
 
 
 

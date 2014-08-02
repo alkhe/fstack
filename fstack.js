@@ -60,7 +60,7 @@
 					if (err)
 						return callback(err);
 					async.map(ents, function(ent, cb) {
-						fs.stat(_path.join(path.length ? path : '.', ent), cb);
+						fs.stat(fstack.join(path.length ? path : '.', ent), cb);
 					}, function(err, stats) {
 						callback(err, _.zipObject(ents, stats));
 					});
@@ -104,7 +104,7 @@
 					function(next) {
 						fstack.dirs(path, function(err, dirs) {
 							async.map(_.keys(dirs), function(dir, cb) {
-									fstack.fsn(_path.join(path, dir), function(err, d) {
+									fstack.fsn(fstack.join(path, dir), function(err, d) {
 										o[dir] = d ;
 										cb(err);
 									}, depth);
@@ -117,7 +117,7 @@
 					function(next) {
 						fstack.files(path, function(err, files) {
 							async.map(_.keys(files), function(file, cb) {
-									fstack.device(_path.join(path, file), function(err, statmode) {
+									fstack.device(fstack.join(path, file), function(err, statmode) {
 										o[file] = statmode;
 										cb(err);
 									});
@@ -140,6 +140,23 @@
 				if (err)
 					return callback(err);
 				callback(err, statMode(stat.mode & constants.S_IFMT));
+			});
+		},
+		mkdir: function(path, callback) {
+			fstack.checkDir(path, function(err, stat) {
+				if (err && err.code == 'ENOENT')
+					fs.mkdir(path, callback);
+				else
+					callback(err);
+			});
+		},
+		mkdirp: function(path, callback) {
+			async.reduce(fstack.normalize(path).split(fstack.sep), '', function(parent, local, cb) {
+				fstack.mkdir(fstack.join(parent, local), function(err) {
+					cb(err, fstack.join(parent, local));
+				});
+			}, function(err) {
+				callback(err);
 			});
 		},
 		read: function(path, callback) {
