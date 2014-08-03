@@ -132,22 +132,122 @@ fstack.device('./foo', function(err, mode) {
 ### fstack.mkdir(path, callback, [force])
 `fstack.mkdir(path, callback, [force])` will create the directory `path` if it does not already exist, and callback with `(err)`. If `force` is specified, the directory will be created without checks. `fstack#mkdir` will callback with `(err, made)`.
 
+```
+/*
+foo/
+    bar/
+        baz
+    qux
+*/
+
+fstack.mkdir('./foo/quux', function(err) {
+    
+});
+
+/*
+foo/
+    bar/
+        baz
+    quux/
+    qux
+*/
+```
+
 
 ### fstack.mkdirp(path, callback, [force])
 `fstack.mkdirp(path, callback, [force])` will recursively create each directory that leads to `path` if any do not already exist, and callback with `(err)`. If `force` is specified, directories will be created without checks. `fstack#mkdirp` will callback with `(err)`.
 
+```
+/*
+foo/
+    bar/
+        baz
+    qux
+*/
+
+fstack.mkdirp('./foo/quux/corge', function(err) {
+    
+});
+
+/*
+foo/
+    bar/
+        baz
+    quux/
+        corge/
+    qux
+*/
+```
 
 ### fstack.copy(source, destination, callback)
 `fstack.copy(source, destination, callback)` will recursively copy each directory and file from `source` to `destination` if `source` is a directory, and it will copy `source` to `directory` if `source` is a file. `fstack#copy` will create any missing directories in the process. Files in `destination` with the same name as files in `source` will be overwritten. `fstack#copy` will callback with `(err)`.
 
+```
+/*
+foo/
+    bar/
+        baz
+    qux
+*/
+
+fstack.copy('./foo', './quux', function(err) {
+    
+});
+
+/*
+foo/
+    bar/
+        baz
+    qux
+quux/
+    bar/
+        baz
+    qux
+*/
+```
 
 ### fstack.move(source, destination, callback)
 `fstack.move(source, destination, callback)` will recursively move each directory and file from `source` to `destination` if `source` is a directory, using `fs#rename` when possible. It will move `source` to `directory` if `source` is a file. `fstack#move` will create any missing directories in the process. Files in `destination` with the same name as files in `source` will be overwritten. `fstack#move` will callback with `(err)`.
 
+```
+/*
+foo/
+    bar/
+        baz
+    qux
+*/
+
+fstack.move('./foo', './quux', function(err) {
+    
+});
+
+/*
+quux/
+    bar/
+        baz
+    qux
+*/
+```
 
 ### fstack.delete(path, callback)
 `fstack.delete(path, callback)` will recursively delete each directory and file in `path`, if `path` is a directory, while it will delete `path` if it is a non-directory. `fstack#delete` will callback with `(err)`.
 
+```
+/*
+foo/
+    bar/
+        baz
+    qux
+*/
+
+fstack.delete('./foo', function(err) {
+    
+});
+
+/*
+
+*/
+```
 
 ### fstack.checkFile(path, callback)
 `fstack.checkFile(path, callback)` will check if `path` exists as a non-directory and callback with `(err, stat)`, where `stat` is the stat of `path`.
