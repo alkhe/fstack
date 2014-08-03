@@ -10,6 +10,9 @@ A lightweight and efficient driver stack to easily manage and maintain a filesys
 ## Installing
 `npm install --save fstack`
 
+## Usage
+`var fstack = require('fstack');`
+
 ## Documentation
 
 ### fstack.ents(path, callback)
