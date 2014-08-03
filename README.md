@@ -33,11 +33,11 @@ Device types are `file`, `directory`, `block-device`, `char-device`, `link`, `fi
 
 
 ### fstack.mkdir(path, callback, [force])
-`fstack.mkdir(path, callback)` will create the directory `path` if it does not already exist, and callback with `(err)`. If `force` is specified, the directory will be created without checks. `fstack#mkdir` will callback with `(err, made)`.
+`fstack.mkdir(path, callback, [force])` will create the directory `path` if it does not already exist, and callback with `(err)`. If `force` is specified, the directory will be created without checks. `fstack#mkdir` will callback with `(err, made)`.
 
 
 ### fstack.mkdirp(path, callback, [force])
-`fstack.mkdirp(path, callback)` will recursively create each directory that leads to `path` if any do not already exist, and callback with `(err)`. If `force` is specified, directories will be created without checks. `fstack#mkdirp` will callback with `(err)`.
+`fstack.mkdirp(path, callback, [force])` will recursively create each directory that leads to `path` if any do not already exist, and callback with `(err)`. If `force` is specified, directories will be created without checks. `fstack#mkdirp` will callback with `(err)`.
 
 
 ### fstack.copy(source, destination, callback)
