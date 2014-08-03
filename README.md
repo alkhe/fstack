@@ -32,15 +32,23 @@ Device types are `file`, `directory`, `block-device`, `char-device`, `link`, `fi
 
 
 ### fstack.mkdir(path, callback, [force])
-`fstack.mkdir(path, callback)` will create the directory `path` if it does not already exist, and callback with `(err)`. If `force` is specified, the directory will be created without checks.
+`fstack.mkdir(path, callback)` will create the directory `path` if it does not already exist, and callback with `(err)`. If `force` is specified, the directory will be created without checks. `fstack#mkdir` will callback with `(err, made)`.
 
 
 ### fstack.mkdirp(path, callback, [force])
-`fstack.mkdirp(path, callback)` will recursively create each directory that leads to `path` if any do not already exist, and callback with `(err)`. If `force` is specified, directories will be created without checks.
+`fstack.mkdirp(path, callback)` will recursively create each directory that leads to `path` if any do not already exist, and callback with `(err)`. If `force` is specified, directories will be created without checks. `fstack#mkdirp` will callback with `(err)`.
 
 
 ### fstack.copy(source, destination, callback)
-`fstack.copy(source, destination, callback)` will recursively copy each directory and file from `source` to `destination` if `source` is a directory, and it will copy `source` to `directory` if `source` is a file. `fstack#copy` will create any missing directories in the process. Files in `destination` with the same name as files in `source` will be overwritten.
+`fstack.copy(source, destination, callback)` will recursively copy each directory and file from `source` to `destination` if `source` is a directory, and it will copy `source` to `directory` if `source` is a file. `fstack#copy` will create any missing directories in the process. Files in `destination` with the same name as files in `source` will be overwritten. `fstack#copy` will callback with `(err)`.
+
+
+### fstack.move(source, destination, callback)
+`fstack.move(source, destination, callback)` will recursively move each directory and file from `source` to `destination` if `source` is a directory, using `fs#rename` when possible. It will move `source` to `directory` if `source` is a file. `fstack#move` will create any missing directories in the process. Files in `destination` with the same name as files in `source` will be overwritten. `fstack#move` will callback with `(err)`.
+
+
+### fstack.delete(path, callback)
+`fstack.delete(path, callback)` will recursively delete each directory and file in `path`. `fstack#delete` will callback with `(err)`.
 
 
 ### fstack.checkFile(path, callback)

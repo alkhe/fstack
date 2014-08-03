@@ -2,7 +2,7 @@ var fstack = require('../fstack'),
 	async = require('async');
 
 async.series([
-	/*function(next) {
+	function(next) {
 		fstack.ents('.', function(err, ents) {
 			console.log('ents: ');
 			console.log(ents);
@@ -54,7 +54,7 @@ async.series([
 			console.log(JSON.stringify(fso, null, 4));
 			next();
 		}, 1);
-	},*/
+	},
 	function(next) {
 		fstack.mkdirp('b/c/d/e', function(err) {
 			console.log(5, err, 5);
