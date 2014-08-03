@@ -175,7 +175,7 @@
 						err = null;
 					else
 						return callback(err);
-				fs.write(path, data, callback);
+				fs.writeFile(path, data, callback);
 			});
 		},
 		writeStream: function(path, callback) {
@@ -332,7 +332,7 @@
 							], function(err) {
 								if (err)
 									return callback(err);
-								fstack.delete(source, callback);
+								fs.rmdir(source, callback);
 							});
 						}
 					});

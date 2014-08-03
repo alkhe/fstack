@@ -57,19 +57,21 @@ async.series([
 	},
 	function(next) {
 		fstack.mkdirp('b/c/d/e', function(err) {
-			console.log(5, err, 5);
 			next();
 		});
 	},
 	function(next) {
 		fstack.copy('a', 'f', function(err) {
-			console.log(5, err, 5);
 			next();
 		});
 	},
 	function(next) {
 		fstack.move('f', 'g', function(err) {
-			console.log(5, err, 5);
+			next();
+		});
+	},
+	function(next) {
+		fstack.write('abc.de', 'hello', function(err) {
 			next();
 		});
 	}

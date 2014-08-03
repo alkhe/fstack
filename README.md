@@ -73,7 +73,7 @@ Device types are `file`, `directory`, `block-device`, `char-device`, `link`, `fi
 
 
 ### fstack.write(path, callback)
-`fstack#write` behaves the same way as `fs#write`, but first performs a check to see whether the supplied file exists.
+`fstack#write` behaves the same way as `fs#writeFile`, but first performs a check to see whether the supplied file exists.
 
 
 ### fstack.writeStream(path, callback)
