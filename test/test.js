@@ -1,8 +1,8 @@
 var fstack = require('../fstack'),
 	async = require('async');
 
-async.series([/*
-	function(next) {
+async.series([
+	/*function(next) {
 		fstack.ents('.', function(err, ents) {
 			console.log('ents: ');
 			console.log(ents);
@@ -24,13 +24,13 @@ async.series([/*
 		});
 	},
 	function(next) {
-		fstack.readStream('fstack.js', function(err, stream) {
+		fstack.readStream('test.js', function(err, stream) {
 			stream.pipe(process.stdout);
 			next();
 		});
 	},
 	function(next) {
-		fstack.read('fstack.js', function(err, data) {
+		fstack.read('test.js', function(err, data) {
 			console.log(data.toString());
 			next();
 		});
@@ -68,7 +68,7 @@ async.series([/*
 		});
 	},
 	function(next) {
-		fstack.move('b', 'g', function(err) {
+		fstack.move('f', 'g', function(err) {
 			console.log(5, err, 5);
 			next();
 		});

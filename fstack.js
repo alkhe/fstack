@@ -124,8 +124,7 @@
 						});
 					}
 				], function(err) {
-					if (callback)
-						callback(err, o);
+					callback(err, o);
 				});
 			}
 			else
@@ -235,35 +234,22 @@
 							function(next) {
 								fstack.dirs(source, function(err, dirs) {
 									if (err)
-										return callback(err);
-									async.each(_.keys(dirs), function(dir) {
-										fstack.copy(fstack.join(source, dir), fstack.join(destination, dir), function(err) {
-											if (err)
-												return callback(err);
-										});
-									}, function(err) {
-										next(err);
-									});
+										return next(err);
+									async.each(_.keys(dirs), function(dir, n) {
+										fstack.copy(fstack.join(source, dir), fstack.join(destination, dir), n);
+									}, next);
 								});
 							},
 							function(next) {
 								fstack.files(source, function(err, files) {
 									if (err)
-										return callback(err);
-									async.each(_.keys(files), function(file) {
-										fstack.copy(fstack.join(source, file), fstack.join(destination, file), function(err) {
-											if (err)
-												return callback(err);
-										}, function(err) {
-											next(err);
-										});
-									});
+										return next(err);
+									async.each(_.keys(files), function(file, n) {
+										fstack.copy(fstack.join(source, file), fstack.join(destination, file), n);
+									}, next);
 								});
 							}
-							], function(err) {
-								console.log(5);
-								callback(err);
-						});
+						], callback);
 					});
 				}
 				else {
@@ -291,33 +277,36 @@
 					fs.stat(destination, function(err) {
 						if (err && err.code == 'ENOENT') {
 							err = null;
-							fstack.mkdirp(destination, function(err) {
+							fstack.mkdirp(fstack.dirname(destination), function(err) {
 								if (err)
 									return callback(err);
+								return fs.rename(source, destination, callback);
 							});
 						}
 						else if (err)
-							return callback(err);
-						fstack.dirs(source, function(err, dirs) {
-							if (err)
-								return callback(err);
-							async.each(_.keys(dirs), function(dir) {
-								fstack.move(fstack.join(source, dir), fstack.join(destination, dir), function(err) {
-									if (err)
-										return callback(err);
-								});
-							});
-						});
-						fstack.files(source, function(err, files) {
-							if (err)
-								return callback(err);
-							async.each(_.keys(files), function(file) {
-								fstack.move(fstack.join(source, file), fstack.join(destination, file), function(err) {
-									if (err)
-										return callback(err);
-								});
-							});
-						});
+							return callback(err)
+						else {
+							async.parallel([
+								function(next) {
+									fstack.dirs(source, function(err, dirs) {
+										if (err)
+											return next(err);
+										async.each(_.keys(dirs), function(dir, n) {
+											fstack.move(fstack.join(source, dir), fstack.join(destination, dir), n);
+										}, next);
+									});
+								},
+								function(next) {
+									fstack.files(source, function(err, files) {
+										if (err)
+											return next(err);
+										async.each(_.keys(files), function(file, n) {
+											fstack.move(fstack.join(source, file), fstack.join(destination, file), n);
+										}, next);
+									});
+								}
+							], callback);
+						}
 					});
 				}
 				else {
@@ -327,11 +316,7 @@
 							fstack.mkdirp(fstack.dirname(destination), function(err) {
 								if (err)
 									return callback(err);
-								fs.rename(source, destination, function(err) {
-									if (err)
-										return callback(err);
-								});
-								callback(null);
+								fs.rename(source, destination, callback);
 							});
 						}
 						else
