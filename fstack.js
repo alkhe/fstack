@@ -35,7 +35,7 @@
 				else if (stat)
 					return callback(new Error('not-file'));
 				else
-					return callback(err || new Error('not-found'));
+					return callback(err);
 			});
 		},
 		checkDir: function(path, callback) {
@@ -45,7 +45,7 @@
 				else if (stat)
 					return callback(new Error('not-directory'));
 				else
-					return callback(err || new Error('not-found'));
+					return callback(err);
 			});
 		},
 		ents: function(path, callback) {
@@ -90,7 +90,7 @@
 				}, depth);
 			});
 		},
-		fso: this.fst,
+		fso: fstack.fst,
 		fsn: function(path, callback, depth) {
 			var o = {};
 			if (depth != 0) {
@@ -132,25 +132,31 @@
 				callback(null, o);
 		},
 		device: function(path, callback) {
-			fstack.checkFile(path, function(err, stat) {
+			fs.stat(path, function(err, stat) {
 				if (err)
 					return callback(err);
 				callback(err, statMode(stat.mode & constants.S_IFMT));
 			});
 		},
-		mkdir: function(path, callback) {
-			fstack.checkDir(path, function(err, stat) {
-				if (err && err.code == 'ENOENT')
-					fs.mkdir(path, callback);
-				else
-					callback(err);
-			});
-		},
-		mkdirp: function(path, callback) {
-			async.reduce(fstack.normalize(path).split(fstack.sep), '', function(parent, local, cb) {
-				fstack.mkdir(fstack.join(parent, local), function(err) {
-					cb(err, fstack.join(parent, local));
+		mkdir: function(path, callback, force) {
+			if (!force)
+				fstack.checkDir(path, function(err, stat) {
+					if (err && err.code == 'ENOENT')
+						fs.mkdir(path, _.partialRight(callback, true));
+					else
+						callback(err);
 				});
+			else
+				fs.mkdir(path, _.partialRight(callback, true));
+		},
+		mkdirp: function(path, callback, force) {
+			var force = force || false;
+			async.reduce(fstack.normalize(path).split(fstack.sep), '', function(parent, local, cb) {
+				fstack.mkdir(fstack.join(parent, local), function(err, made) {
+					if (force = made && err && (err.code == 'EEXIST'))
+						err = null;
+					cb(err, fstack.join(parent, local));
+				}, force);
 			}, function(err) {
 				callback(err);
 			});
@@ -172,21 +178,30 @@
 		write: function(path, data, callback) {
 			fstack.checkFile(path, function(err) {
 				if (err)
-					return callback(err);
+					if (err.code == 'ENOENT')
+						err = null;
+					else
+						return callback(err);
 				fs.write(path, data, callback);
 			});
 		},
 		writeStream: function(path, callback) {
 			fstack.checkFile(path, function(err) {
 				if (err)
-					return callback(err);
+					if (err.code == 'ENOENT')
+						err = null;
+					else
+						return callback(err);
 				callback(err, fs.createWriteStream(path));
 			});
 		},
 		append: function(path, data, callback) {
 			fstack.checkFile(path, function(err) {
 				if (err)
-					return callback(err);
+					if (err.code == 'ENOENT')
+						err = null;
+					else
+						return callback(err);
 				fs.appendFile(path, data, callback);
 			});
 		},
@@ -199,6 +214,130 @@
 						fstack.json(path + '.json', callback, true);
 				else
 					callback(err, JSON.parse(data));
+			});
+		},
+		copy: function(source, destination, callback) {
+			fs.stat(source, function(err, stat) {
+				if (err)
+					return callback(err);
+				if (stat.isDirectory()) {
+					fs.stat(destination, function(err) {
+						if (err && err.code == 'ENOENT') {
+							err = null;
+							fstack.mkdirp(destination, function(err) {
+								if (err)
+									return callback(err);
+							});
+						}
+						else if (err)
+							return callback(err);
+						async.parallel([
+							function(next) {
+								fstack.dirs(source, function(err, dirs) {
+									if (err)
+										return callback(err);
+									async.each(_.keys(dirs), function(dir) {
+										fstack.copy(fstack.join(source, dir), fstack.join(destination, dir), function(err) {
+											if (err)
+												return callback(err);
+										});
+									}, function(err) {
+										next(err);
+									});
+								});
+							},
+							function(next) {
+								fstack.files(source, function(err, files) {
+									if (err)
+										return callback(err);
+									async.each(_.keys(files), function(file) {
+										fstack.copy(fstack.join(source, file), fstack.join(destination, file), function(err) {
+											if (err)
+												return callback(err);
+										}, function(err) {
+											next(err);
+										});
+									});
+								});
+							}
+							], function(err) {
+								console.log(5);
+								callback(err);
+						});
+					});
+				}
+				else {
+					fs.stat(destination, function(err) {
+						if (err && err.code == 'ENOENT') {
+							err = null;
+							fstack.mkdirp(fstack.dirname(destination), function(err) {
+								if (err)
+									return callback(err);
+								fs.createReadStream(source).pipe(fs.createWriteStream(destination));
+								callback(null);
+							});
+						}
+						else
+							return callback(err);
+					});
+				}
+			});
+		},
+		move: function(source, destination, callback) {
+			fs.stat(source, function(err, stat) {
+				if (err)
+					return callback(err);
+				if (stat.isDirectory()) {
+					fs.stat(destination, function(err) {
+						if (err && err.code == 'ENOENT') {
+							err = null;
+							fstack.mkdirp(destination, function(err) {
+								if (err)
+									return callback(err);
+							});
+						}
+						else if (err)
+							return callback(err);
+						fstack.dirs(source, function(err, dirs) {
+							if (err)
+								return callback(err);
+							async.each(_.keys(dirs), function(dir) {
+								fstack.move(fstack.join(source, dir), fstack.join(destination, dir), function(err) {
+									if (err)
+										return callback(err);
+								});
+							});
+						});
+						fstack.files(source, function(err, files) {
+							if (err)
+								return callback(err);
+							async.each(_.keys(files), function(file) {
+								fstack.move(fstack.join(source, file), fstack.join(destination, file), function(err) {
+									if (err)
+										return callback(err);
+								});
+							});
+						});
+					});
+				}
+				else {
+					fs.stat(destination, function(err) {
+						if (err && err.code == 'ENOENT') {
+							err = null;
+							fstack.mkdirp(fstack.dirname(destination), function(err) {
+								if (err)
+									return callback(err);
+								fs.rename(source, destination, function(err) {
+									if (err)
+										return callback(err);
+								});
+								callback(null);
+							});
+						}
+						else
+							return callback(err);
+					});
+				}
 			});
 		}
 	}, _path, os);

@@ -31,12 +31,16 @@ Alias of fstack#fst.
 Device types are `file`, `directory`, `block-device`, `char-device`, `link`, `fifo`, `socket`, and `unknown`.
 
 
-### fstack.mkdir(path, callback)
-`fstack.mkdir(path, callback)` will create the directory `path` if it does not already exist, and callback with `(err)`.
+### fstack.mkdir(path, callback, [force])
+`fstack.mkdir(path, callback)` will create the directory `path` if it does not already exist, and callback with `(err)`. If `force` is specified, the directory will be created without checks.
 
 
-### fstack.mkdirp(path, callback)
-`fstack.mkdirp(path, callback)` will recursively create each directory that leads to `path` if any do not already exist, and callback with `(err)`.
+### fstack.mkdirp(path, callback, [force])
+`fstack.mkdirp(path, callback)` will recursively create each directory that leads to `path` if any do not already exist, and callback with `(err)`. If `force` is specified, directories will be created without checks.
+
+
+### fstack.copy(source, destination, callback)
+`fstack.copy(source, destination, callback)` will recursively copy each directory and file from `source` to `destination` if `source` is a directory, and it will copy `source` to `directory` if `source` is a file. `fstack#copy` will create any missing directories in the process. Files in `destination` with the same name as files in `source` will be overwritten.
 
 
 ### fstack.checkFile(path, callback)
