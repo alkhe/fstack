@@ -1,6 +1,6 @@
 {
   "name": "fstack",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "A lightweight driver stack to easily manage and maintain a filesystem.",
   "main": "fstack.js",
   "dependencies": {
