@@ -1,6 +1,8 @@
 fstack
 ======
 
+![Travis-CI](https://travis-ci.org/chronize/fstack.svg?branch=master)
+
 A lightweight and efficient driver stack to easily manage and maintain a filesystem.
 
 `fstack` provides a simple and optimized interface for accessing a filesystem and deriving logical structures by utilizing the `fs` core library. `fstack` features high-level filesystem operations such as atomic implementations of `copy`, `move`, `delete`, and `mkdir -p`. `fstack` can also derive a filesystem tree object based on a supplied path, which has countless applications. `fstack`  is designed to replace other npm packages such as `mkdirp`, `file`, and `node-dir`. `fstack` also extends `path` and `os`, for convenience.

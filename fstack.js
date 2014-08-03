@@ -93,7 +93,7 @@
 		fso: fstack.fst,
 		fsn: function(path, callback, depth) {
 			var o = {};
-			if (depth != 0) {
+			if (depth !== 0) {
 				if (depth)
 					depth--;
 				async.parallel([
@@ -134,7 +134,7 @@
 		mkdir: function(path, callback, force) {
 			if (!force)
 				fstack.checkDir(path, function(err, stat) {
-					if (err && err.code == 'ENOENT')
+					if (err && err.code === 'ENOENT')
 						fs.mkdir(path, _.partialRight(callback, true));
 					else
 						callback(err);
@@ -146,7 +146,7 @@
 			var force = force || false;
 			async.reduce(fstack.normalize(path).split(fstack.sep), '', function(parent, local, cb) {
 				fstack.mkdir(fstack.join(parent, local), function(err, made) {
-					if (force = made && err && (err.code == 'EEXIST'))
+					if (force = made && err && (err.code === 'EEXIST'))
 						err = null;
 					cb(err, fstack.join(parent, local));
 				}, force);
@@ -171,7 +171,7 @@
 		write: function(path, data, callback) {
 			fstack.checkFile(path, function(err) {
 				if (err)
-					if (err.code == 'ENOENT')
+					if (err.code === 'ENOENT')
 						err = null;
 					else
 						return callback(err);
@@ -181,7 +181,7 @@
 		writeStream: function(path, callback) {
 			fstack.checkFile(path, function(err) {
 				if (err)
-					if (err.code == 'ENOENT')
+					if (err.code === 'ENOENT')
 						err = null;
 					else
 						return callback(err);
@@ -191,7 +191,7 @@
 		append: function(path, data, callback) {
 			fstack.checkFile(path, function(err) {
 				if (err)
-					if (err.code == 'ENOENT')
+					if (err.code === 'ENOENT')
 						err = null;
 					else
 						return callback(err);
@@ -245,7 +245,7 @@
 					return callback(err);
 				if (stat.isDirectory()) {
 					fs.stat(destination, function(err) {
-						if (err && err.code == 'ENOENT') {
+						if (err && err.code === 'ENOENT') {
 							err = null;
 							fstack.mkdirp(destination, function(err) {
 								if (err)
@@ -278,7 +278,7 @@
 				}
 				else {
 					fs.stat(destination, function(err) {
-						if (err && err.code == 'ENOENT') {
+						if (err && err.code === 'ENOENT') {
 							err = null;
 							fstack.mkdirp(fstack.dirname(destination), function(err) {
 								if (err)
@@ -299,7 +299,7 @@
 					return callback(err);
 				if (stat.isDirectory()) {
 					fs.stat(destination, function(err) {
-						if (err && err.code == 'ENOENT') {
+						if (err && err.code === 'ENOENT') {
 							err = null;
 							fstack.mkdirp(fstack.dirname(destination), function(err) {
 								if (err)
@@ -339,7 +339,7 @@
 				}
 				else {
 					fs.stat(destination, function(err) {
-						if (err && err.code == 'ENOENT') {
+						if (err && err.code === 'ENOENT') {
 							err = null;
 							fstack.mkdirp(fstack.dirname(destination), function(err) {
 								if (err)
