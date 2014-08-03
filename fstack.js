@@ -55,7 +55,7 @@
 			});
 		},
 		ents: function(path, callback) {
-			fstack.checkDir(path, function(err, stat) {
+			fstack.checkDir(path, function(err) {
 				if (err) {
 					return callback(err);
 				}
@@ -92,7 +92,7 @@
 			});
 		},
 		fst: function(path, callback, depth) {
-			fstack.checkDir(path, function(err, stat) {
+			fstack.checkDir(path, function(err) {
 				if (err) {
 					return callback(err);
 				}
@@ -147,11 +147,13 @@
 		},
 		mkdir: function(path, callback, force) {
 			if (!force) {
-				fstack.checkDir(path, function(err, stat) {
-					if (err && err.code === 'ENOENT')
+				fstack.checkDir(path, function(err) {
+					if (err && err.code === 'ENOENT') {
 						fs.mkdir(path, _.partialRight(callback, true));
-					else
+					}
+					else {
 						callback(err);
+					}
 				});
 			}
 			else {
@@ -352,7 +354,7 @@
 							});
 						}
 						else if (err) {
-							return callback(err)
+							return callback(err);
 						}
 						else {
 							async.parallel([
