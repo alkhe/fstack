@@ -40,18 +40,18 @@ async.series([
 		next();
 	},
 	function(next) {
-		fstack.fst('.', function(err, fso) {
+		fstack.fst('.', function(err, fst) {
 			if (err)
 				console.log(err);
-			console.log(JSON.stringify(fso, null, 4));
+			console.log(JSON.stringify(fst, null, 4));
 			next();
 		});
 	},
 	function(next) {
-		fstack.fst('.', function(err, fso) {
+		fstack.fst('.', function(err, fst) {
 			if (err)
 				console.log(err);
-			console.log(JSON.stringify(fso, null, 4));
+			console.log(JSON.stringify(fst, null, 4));
 			next();
 		}, 1);
 	},

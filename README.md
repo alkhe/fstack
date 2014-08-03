@@ -11,18 +11,92 @@ A lightweight and efficient driver stack to easily manage and maintain a filesys
 ### fstack.ents(path, callback)
 `fstack.ents(path, callback)` will return all of the immediate child entities inside `path` and callback with `(err, ents)`, where `ents` is an associative array containing entity names as keys and stats as values.
 
+```
+/*
+foo/
+    bar/
+        baz
+    qux
+*/
+
+fstack.ents('./foo', function(err, ents) {
+    console.log(_.keys(ents));
+});
+
+// ['bar', 'qux']
+```
 
 ### fstack.dirs(path, callback)
 `fstack.dirs(path, callback)` will return all of the immediate child directories inside `path` and callback with `(err, dirs)`, where `dirs` is an associative array containing directory names as keys and stats as values.
 
+```
+/*
+foo/
+    bar/
+        baz
+    qux
+*/
+
+fstack.dirs('./foo', function(err, dirs) {
+    console.log(_.keys(dirs));
+});
+
+// ['bar']
+```
 
 ### fstack.files(path, callback)
 `fstack.ents(path, callback)` will return all of the immediate child non-directories inside `path` and callback with `(err, files)`, where `files` is an associative array containing non-directory names as keys and stats as values.
 
+```
+/*
+foo/
+    bar/
+        baz
+    qux
+*/
+
+fstack.files('./foo', function(err, files) {
+    console.log(_.keys(files));
+});
+
+// ['qux']
+```
 
 ### fstack.fst(path, callback, [depth])
-`fstack.fst(path, callback, [depth])` will callback with `(err, o)`, where `o` is an object representing the filesystem with `path` as the root node. `depth` is the number of levels to recursively crawl the filesystem, and defaults to null, which does a complete crawl. Calling fstack#fst with a `depth` of 1 or 2 is a good strategy for returning an object that will represent a filesystem client-side. Directories will contain an object representing its children, while non-directories will contain their device types, which is usually `'file'`.
+`fstack.fst(path, callback, [depth])` will callback with `(err, fst)`, where `fst` is an object representing the filesystem with `path` as the root node. `depth` is the number of levels to recursively crawl the filesystem, and defaults to null, which does a complete crawl. Calling fstack#fst with a `depth` of 1 or 2 is a good strategy for returning an object that will represent a filesystem client-side. Directories will contain an object representing its children, while non-directories will contain their device types, which is usually `'file'`.
 
+```
+/*
+foo/
+    bar/
+        baz
+    qux
+*/
+
+fstack.fst('./foo', function(err, fst) {
+    console.log(JSON.stringify(fst, null, 4));
+});
+
+/*
+{
+    "qux": "file",
+    "bar": {
+        "baz": "file"
+    }
+}
+*/
+
+fstack.fst('./foo', function(err, fst) {
+    console.log(JSON.stringify(fst, null, 4));
+}, 1);
+
+/*
+{
+    "bar": {},
+    "qux": "file"
+}
+*/
+```
 
 ### fstack.fso
 Alias of fstack#fst.
@@ -33,6 +107,20 @@ Alias of fstack#fst.
 
 Device types are `file`, `directory`, `block-device`, `char-device`, `link`, `fifo`, `socket`, and `unknown`.
 
+```
+/*
+foo/
+    bar/
+        baz
+    qux
+*/
+
+fstack.device('./foo', function(err, mode) {
+    console.log(mode);
+});
+
+// 'directory'
+```
 
 ### fstack.mkdir(path, callback, [force])
 `fstack.mkdir(path, callback, [force])` will create the directory `path` if it does not already exist, and callback with `(err)`. If `force` is specified, the directory will be created without checks. `fstack#mkdir` will callback with `(err, made)`.
