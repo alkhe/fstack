@@ -9,7 +9,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "test/test.js"
+    "test": "cd ./test && node ./test.js"
   },
   "repository": {
     "type": "git",
