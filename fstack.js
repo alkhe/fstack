@@ -284,7 +284,7 @@
 								if (err)
 									return callback(err);
 								fs.createReadStream(source).pipe(fs.createWriteStream(destination));
-								callback(null);
+								return callback(err);
 							});
 						}
 						else
@@ -348,7 +348,8 @@
 						}
 						else if (err)
 							return callback(err);
-						fs.rename(source, destination, callback);
+						else
+							fs.rename(source, destination, callback);
 					});
 				}
 			});
