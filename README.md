@@ -77,6 +77,10 @@ fstack.files('./foo', function(err, files) {
 foo/
     bar/
         baz
+    quux/
+        corge/
+            garply
+        grault
     qux
 */
 
@@ -89,6 +93,12 @@ fstack.fst('./foo', function(err, fst) {
     "qux": "file",
     "bar": {
         "baz": "file"
+    },
+    "quux": {
+        "grault": "file",
+        "corge": {
+            "garply": "file"
+        }
     }
 }
 */
@@ -100,6 +110,7 @@ fstack.fst('./foo', function(err, fst) {
 /*
 {
     "bar": {},
+    "quux": {},
     "qux": "file"
 }
 */
