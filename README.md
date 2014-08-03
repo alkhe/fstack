@@ -51,7 +51,7 @@ Device types are `file`, `directory`, `block-device`, `char-device`, `link`, `fi
 
 
 ### fstack.delete(path, callback)
-`fstack.delete(path, callback)` will recursively delete each directory and file in `path`. `fstack#delete` will callback with `(err)`.
+`fstack.delete(path, callback)` will recursively delete each directory and file in `path`, if `path` is a directory, while it will delete `path` if it is a non-directory. `fstack#delete` will callback with `(err)`.
 
 
 ### fstack.checkFile(path, callback)
