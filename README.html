@@ -374,7 +374,8 @@ td:not(.linenos) .linenodiv { padding: 0 !important; }
   h2, h3 { page-break-after: avoid; }
 }
 </style><title>README</title></head><body><h1 id="fstack"><a name="user-content-fstack" href="#fstack" class="headeranchor-link"  aria-hidden="true"><span class="headeranchor"></span></a>fstack</h1>
-<p><img alt="Travis-CI" src="https://travis-ci.org/chronize/fstack.svg?branch=master" /></p>
+<p><a href="https://travis-ci.org/chronize/fstack"><img alt="Build Status" src="https://travis-ci.org/chronize/fstack.svg?branch=master" /></a><br />
+<a href="http://badge.fury.io/js/fstack"><img alt="NPM version" src="https://badge.fury.io/js/fstack.svg" /></a></p>
 <p>A lightweight and efficient driver stack to easily manage and maintain a filesystem.</p>
 <p><code>fstack</code> provides a simple and optimized interface for accessing a filesystem and deriving logical structures by utilizing the <code>fs</code> core library. <code>fstack</code> features high-level filesystem operations such as atomic implementations of <code>copy</code>, <code>move</code>, <code>delete</code>, and <code>mkdir -p</code>. <code>fstack</code> can also derive a filesystem tree object based on a supplied path, which has countless applications. <code>fstack</code>  is designed to replace other npm packages such as <code>mkdirp</code>, <code>file</code>, and <code>node-dir</code>. <code>fstack</code> also extends <code>path</code> and <code>os</code>, for convenience.</p>
 <h2 id="installing"><a name="user-content-installing" href="#installing" class="headeranchor-link"  aria-hidden="true"><span class="headeranchor"></span></a>Installing</h2>
@@ -436,6 +437,10 @@ fstack.files('./foo', function(err, files) {
 foo/
     bar/
         baz
+    quux/
+        corge/
+            garply
+        grault
     qux
 */
 
@@ -448,6 +453,12 @@ fstack.fst('./foo', function(err, fst) {
     &quot;qux&quot;: &quot;file&quot;,
     &quot;bar&quot;: {
         &quot;baz&quot;: &quot;file&quot;
+    },
+    &quot;quux&quot;: {
+        &quot;grault&quot;: &quot;file&quot;,
+        &quot;corge&quot;: {
+            &quot;garply&quot;: &quot;file&quot;
+        }
     }
 }
 */
@@ -459,6 +470,7 @@ fstack.fst('./foo', function(err, fst) {
 /*
 {
     &quot;bar&quot;: {},
+    &quot;quux&quot;: {},
     &quot;qux&quot;: &quot;file&quot;
 }
 */
@@ -598,6 +610,25 @@ fstack.delete('./foo', function(err) {
 <p><code>fstack.checkDir(path, callback)</code> will check if <code>path</code> exists as a directory and callback with <code>(err, stat)</code>, where <code>stat</code> is the stat of <code>path</code>.</p>
 <h3 id="fstackjsonpath-callback-explicit"><a name="user-content-fstackjsonpath-callback-explicit" href="#fstackjsonpath-callback-explicit" class="headeranchor-link"  aria-hidden="true"><span class="headeranchor"></span></a>fstack.json(path, callback, [explicit])</h3>
 <p><code>fstack.json(path, callback, [explicit])</code> will read the json from <code>path</code> if it is a file. <code>explicit</code> defaults to <code>false</code>, where it may append <code>'.json'</code> to the supplied <code>path</code> so that the file may be accessed without requiring the <code>'.json'</code> extension. <code>fstack#json(path, callback, explicit)</code> will callback with <code>(err, json)</code>, where <code>json</code> is the parsed object for the file at <code>path</code>.</p>
+<pre><code>/*
+test.json
+    {
+        &quot;a&quot;: &quot;b&quot;,
+        &quot;c&quot;: {
+            &quot;d&quot;: &quot;e&quot;
+        }
+    }
+*/
+
+fstack.json('./test.json', function(err, json) {
+    console.log(json.c);
+});
+
+/*
+{ d: 'e' }
+*/
+</code></pre>
+
 <h3 id="fstackreadpath-callback"><a name="user-content-fstackreadpath-callback" href="#fstackreadpath-callback" class="headeranchor-link"  aria-hidden="true"><span class="headeranchor"></span></a>fstack.read(path, callback)</h3>
 <p><code>fstack#read</code> behaves the same way as <code>fs#readFile</code>, but first performs a check to see whether the supplied file exists.</p>
 <h3 id="fstackreadstreampath-callback"><a name="user-content-fstackreadstreampath-callback" href="#fstackreadstreampath-callback" class="headeranchor-link"  aria-hidden="true"><span class="headeranchor"></span></a>fstack.readStream(path, callback)</h3>

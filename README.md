@@ -1,7 +1,8 @@
 fstack
 ======
 
-![Travis-CI](https://travis-ci.org/chronize/fstack.svg?branch=master)
+[![Build Status](https://travis-ci.org/chronize/fstack.svg?branch=master)](https://travis-ci.org/chronize/fstack)
+[![NPM version](https://badge.fury.io/js/fstack.svg)](http://badge.fury.io/js/fstack)
 
 A lightweight and efficient driver stack to easily manage and maintain a filesystem.
 
@@ -271,6 +272,25 @@ fstack.delete('./foo', function(err) {
 ### fstack.json(path, callback, [explicit])
 `fstack.json(path, callback, [explicit])` will read the json from `path` if it is a file. `explicit` defaults to `false`, where it may append `'.json'` to the supplied `path` so that the file may be accessed without requiring the `'.json'` extension. `fstack#json(path, callback, explicit)` will callback with `(err, json)`, where `json` is the parsed object for the file at `path`.
 
+```
+/*
+test.json
+    {
+        "a": "b",
+        "c": {
+            "d": "e"
+        }
+    }
+*/
+
+fstack.json('./test.json', function(err, json) {
+    console.log(json.c);
+});
+
+/*
+{ d: 'e' }
+*/
+```
 
 ### fstack.read(path, callback)
 `fstack#read` behaves the same way as `fs#readFile`, but first performs a check to see whether the supplied file exists.
