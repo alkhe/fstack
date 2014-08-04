@@ -3,7 +3,7 @@ fstack
 
 [![Build Status](https://travis-ci.org/chronize/fstack.svg?branch=master)](https://travis-ci.org/chronize/fstack)
 [![NPM version](https://badge.fury.io/js/fstack.svg)](http://badge.fury.io/js/fstack)
-[![Dependencies](https://david-dm.org/chronize/fstack.svg)](https://david-dm.org/chronize/fstack)
+[![Dependency Status](https://david-dm.org/chronize/fstack.svg)](https://david-dm.org/chronize/fstack)
 
 A lightweight and efficient driver stack to easily manage and maintain a filesystem.
 
