@@ -386,8 +386,8 @@ td:not(.linenos) .linenodiv { padding: 0 !important; }
 <h2 id="usage"><a name="user-content-usage" href="#usage" class="headeranchor-link"  aria-hidden="true"><span class="headeranchor"></span></a>Usage</h2>
 <p><code>var fstack = require('fstack');</code></p>
 <h2 id="documentation"><a name="user-content-documentation" href="#documentation" class="headeranchor-link"  aria-hidden="true"><span class="headeranchor"></span></a>Documentation</h2>
-<h3 id="fstackentspath-callback"><a name="user-content-fstackentspath-callback" href="#fstackentspath-callback" class="headeranchor-link"  aria-hidden="true"><span class="headeranchor"></span></a>fstack.ents(path, callback)</h3>
-<p><code>fstack.ents(path, callback)</code> will return all of the immediate child entities inside <code>path</code> and callback with <code>(err, ents)</code>, where <code>ents</code> is an associative array containing entity names as keys and stats as values.</p>
+<h3 id="fstackentspath-callback-stat"><a name="user-content-fstackentspath-callback-stat" href="#fstackentspath-callback-stat" class="headeranchor-link"  aria-hidden="true"><span class="headeranchor"></span></a>fstack.ents(path, callback, [stat])</h3>
+<p><code>fstack.ents(path, callback, [stat])</code> will return all of the immediate child entities inside <code>path</code> and callback with <code>(err, ents)</code>, where <code>ents</code> is an array containing entity names if <code>stat</code> is not specified, and will callback with <code>(err, ents, stats)</code> if <code>stat</code> is specified.</p>
 <pre><code>/*
 foo/
     bar/
@@ -396,7 +396,7 @@ foo/
 */
 
 fstack.ents('./foo', function(err, ents) {
-    console.log(_.keys(ents));
+    console.log(ents);
 });
 
 // ['bar', 'qux']
@@ -412,7 +412,7 @@ foo/
 */
 
 fstack.dirs('./foo', function(err, dirs) {
-    console.log(_.keys(dirs));
+    console.log(dirs);
 });
 
 // ['bar']
@@ -428,7 +428,7 @@ foo/
 */
 
 fstack.files('./foo', function(err, files) {
-    console.log(_.keys(files));
+    console.log(files);
 });
 
 // ['qux']

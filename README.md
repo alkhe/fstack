@@ -21,8 +21,8 @@ Read more on [why rimraf is a hack.](#rimraf)
 
 ## Documentation
 
-### fstack.ents(path, callback)
-`fstack.ents(path, callback)` will return all of the immediate child entities inside `path` and callback with `(err, ents)`, where `ents` is an associative array containing entity names as keys and stats as values.
+### fstack.ents(path, callback, [stat])
+`fstack.ents(path, callback, [stat])` will return all of the immediate child entities inside `path` and callback with `(err, ents)`, where `ents` is an array containing entity names if `stat` is not specified, and will callback with `(err, ents, stats)` if `stat` is specified.
 
 ```
 /*
@@ -33,7 +33,7 @@ foo/
 */
 
 fstack.ents('./foo', function(err, ents) {
-    console.log(_.keys(ents));
+    console.log(ents);
 });
 
 // ['bar', 'qux']
@@ -51,7 +51,7 @@ foo/
 */
 
 fstack.dirs('./foo', function(err, dirs) {
-    console.log(_.keys(dirs));
+    console.log(dirs);
 });
 
 // ['bar']
@@ -69,7 +69,7 @@ foo/
 */
 
 fstack.files('./foo', function(err, files) {
-    console.log(_.keys(files));
+    console.log(files);
 });
 
 // ['qux']
