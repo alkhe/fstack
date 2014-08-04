@@ -19,7 +19,7 @@ Read more on [why rimraf is a hack.](#rimraf)
 ## Usage
 `var fstack = require('fstack');`
 
-## Benchmark (As of 0.2.17)
+## Benchmark (As of 0.2.18)
 ```
 mkdirp 0 s, 9.342 ms
 fstack 0 s, 6.258 ms

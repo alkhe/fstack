@@ -221,12 +221,9 @@
 		},
 		mkdir: function(path, callback, force) {
 			if (!force) {
-				fstack.checkDir(path, function(err) {
-					if (err && err.code === 'ENOENT') {
-						err = null;
-						fs.mkdir(path, function(err) {
-							callback(err, err || true);
-						});
+				fs.mkdir(path, function(err) {
+					if (!err || err.code === 'EEXIST') {
+						callback(null, !err);
 					}
 					else {
 						callback(err);
@@ -380,28 +377,23 @@
 			});
 		},
 		_copy: function(source, destination, callback) {
-			fstack.mkdirp(fstack.dirname(destination), function(err) {
+			fstack.mkdirp(destination, function(err) {
 				if (!err || err.code === 'ENOENT') {
 					async.parallel([
 						function(next) {
 							fstack.dirs(source, function(err, dirs) {
-								if (err) {
-									return next(err);
-								}
 								async.each(dirs, function(dir, n) {
-									fstack.copy(fstack.join(source, dir), fstack.join(destination, dir), n);
+									fstack._copy(fstack.join(source, dir), fstack.join(destination, dir), n);
 								}, next);
 							});
 						},
 						function(next) {
 							fstack.files(source, function(err, files) {
-								if (err) {
-									return next(err);
-								}
 								async.each(files, function(file, n) {
-									fstack.copy(fstack.join(source, file), fstack.join(destination, file), n);
-								}, next);
-							});
+									fs.createReadStream(fstack.join(source, file)).pipe(fs.createWriteStream(fstack.join(destination, file)));
+									n(null);
+								});
+							}, next);
 						}
 					], callback);
 				}
@@ -479,6 +471,9 @@
 					});
 				}
 			});
+		},
+		_move: function(source, destination, callback) {
+
 		}
 	}, _path, os);
 
