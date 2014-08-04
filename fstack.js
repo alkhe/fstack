@@ -95,7 +95,7 @@
 					callback(err, stat);
 				}
 				else if (stat) {
-					return callback(new Error('not-file'));
+					return callback(new Error('EISDIR'));
 				}
 				else {
 					return callback(err);
@@ -108,7 +108,7 @@
 					callback(err, stat);
 				}
 				else if (stat) {
-					return callback(new Error('not-directory'));
+					return callback(new Error('ENOTDIR'));
 				}
 				else {
 					return callback(err);
@@ -364,58 +364,49 @@
 					return callback(err);
 				}
 				if (stat.isDirectory()) {
-					fs.stat(destination, function(err) {
-						if (err && err.code === 'ENOENT') {
-							err = null;
-							fstack.mkdirp(destination, function(err) {
-								if (err) {
-									return callback(err);
-								}
-							});
-						}
-						else if (err) {
-							return callback(err);
-						}
-						async.parallel([
-							function(next) {
-								fstack.dirs(source, function(err, dirs) {
-									if (err) {
-										return next(err);
-									}
-									async.each(dirs, function(dir, n) {
-										fstack.copy(fstack.join(source, dir), fstack.join(destination, dir), n);
-									}, next);
-								});
-							},
-							function(next) {
-								fstack.files(source, function(err, files) {
-									if (err) {
-										return next(err);
-									}
-									async.each(files, function(file, n) {
-										fstack.copy(fstack.join(source, file), fstack.join(destination, file), n);
-									}, next);
-								});
-							}
-						], callback);
-					});
+					fstack._copy(source, destination, callback);
 				}
 				else {
-					fs.stat(destination, function(err) {
-						if (err && err.code === 'ENOENT') {
-							err = null;
-							fstack.mkdirp(fstack.dirname(destination), function(err) {
-								if (err) {
-									return callback(err);
-								}
-								fs.createReadStream(source).pipe(fs.createWriteStream(destination));
-								return callback(err);
-							});
+					fstack.mkdirp(fstack.dirname(destination), function(err) {
+						if (!err || err.code === 'ENOENT') {
+							fs.createReadStream(source).pipe(fs.createWriteStream(destination));
+							return callback(null);
 						}
 						else {
 							return callback(err);
 						}
 					});
+				}
+			});
+		},
+		_copy: function(source, destination, callback) {
+			fstack.mkdirp(fstack.dirname(destination), function(err) {
+				if (!err || err.code === 'ENOENT') {
+					async.parallel([
+						function(next) {
+							fstack.dirs(source, function(err, dirs) {
+								if (err) {
+									return next(err);
+								}
+								async.each(dirs, function(dir, n) {
+									fstack.copy(fstack.join(source, dir), fstack.join(destination, dir), n);
+								}, next);
+							});
+						},
+						function(next) {
+							fstack.files(source, function(err, files) {
+								if (err) {
+									return next(err);
+								}
+								async.each(files, function(file, n) {
+									fstack.copy(fstack.join(source, file), fstack.join(destination, file), n);
+								}, next);
+							});
+						}
+					], callback);
+				}
+				else {
+					return callback(err);
 				}
 			});
 		},
