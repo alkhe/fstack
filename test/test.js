@@ -71,6 +71,16 @@ async.series([
 		});
 	},
 	function(next) {
+		fstack.copy('b', 'h', function(err) {
+			next();
+		});
+	},
+	function(next) {
+		fstack.delete('b', function(err) {
+			next();
+		});
+	},
+	function(next) {
 		fstack.write('abc.de', 'hello', function(err) {
 			next();
 		});

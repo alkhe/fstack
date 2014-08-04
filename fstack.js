@@ -249,31 +249,34 @@
 					return callback(err);
 				}
 				if (stat.isDirectory()) {
-					async.parallel([
-						function(next) {
-							fstack.dirs(path, function(err, dirs) {
-								async.each(_.keys(dirs), function(dir, n) {
-									fstack.delete(fstack.join(path, dir), n);
-								}, next);
-							});
-						},
-						function(next) {
-							fstack.files(path, function(err, files) {
-								async.each(_.keys(files), function(file, n) {
-									fs.unlink(fstack.join(path, file), n);
-								}, next);
-							});
-						}
-					], function(err) {
-						if (err) {
-							return callback(err);
-						}
-						fs.rmdir(path, callback);
-					});
+					fstack._delete(path, callback);
 				}
 				else {
 					fs.unlink(path, callback);
 				}
+			});
+		},
+		_delete: function(path, callback) {
+			async.parallel([
+				function(next) {
+					fstack.dirs(path, function(err, dirs) {
+						async.each(_.keys(dirs), function(dir, n) {
+							fstack._delete(fstack.join(path, dir), n);
+						}, next);
+					});
+				},
+				function(next) {
+					fstack.files(path, function(err, files) {
+						async.each(_.keys(files), function(file, n) {
+							fs.unlink(fstack.join(path, file), n);
+						}, next);
+					});
+				}
+			], function(err) {
+				if (err) {
+					return callback(err);
+				}
+				fs.rmdir(path, callback);
 			});
 		},
 		copy: function(source, destination, callback) {
