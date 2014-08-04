@@ -316,5 +316,5 @@ fstack.json('./test.json', function(err, json) {
 ### fstack.append(path, callback)
 `fstack#append` behaves the same way as `fs#append`, but first performs a check to see whether the supplied file exists.
 
-## <a name='rimraf'>rimraf</a>
+## <a name='rimraf'></a>rimraf
 The package `rimraf`, which is a popular implementation of `rm -rf` for `Node.js`, actually depends on making assumptions about files and directories. `rimraf` makes the smarter decision by assuming priority of files, but this means that for any call to `rimraf` where the path given contains a child directory, the kernel will return an error, and a new request to the system must be made. Such system calls are expensive. Instead, `fstack` uses its built in entity separator to intuitively `unlink` files and `rmdir` directories, after the children of those directories have been `unlink`'d or `rmdir`'d.
