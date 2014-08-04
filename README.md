@@ -5,11 +5,11 @@ fstack
 [![NPM version](https://badge.fury.io/js/fstack.svg)](http://badge.fury.io/js/fstack)
 [![Dependency Status](https://david-dm.org/chronize/fstack.svg)](https://david-dm.org/chronize/fstack)
 
-A lightweight and efficient driver stack to easily manage and maintain a filesystem.
+A lightweight and efficient driver stack to easily manage and maintain a filesystem. `fstack` is the missing filesystem wrangler for `Node.js`.
 
-`fstack` provides a simple and optimized interface for accessing a filesystem and deriving logical structures by utilizing the `fs` core library. `fstack` features high-level filesystem operations such as atomic implementations of `copy`, `move`, `delete`, and `mkdir -p`. `fstack` can also derive a filesystem tree object based on a supplied path, providing numerous solutions for filesystem dependent applications. `fstack`  is designed to replace other npm packages such as `fs-extra`, `file`, and `node-dir`. `fstack` also extends `path` and `os`, for convenience.
+`fstack` provides a simple and optimized interface for accessing a filesystem and deriving logical structures by utilizing the `fs` core library. `fstack` features high-level filesystem operations such as asynchronous atomic implementations of `copy`, `move`, `rm -rf`, and `mkdir -p`. `fstack` can also derive a filesystem tree object based on a supplied path, providing numerous solutions for filesystem dependent applications. `fstack`  is designed to replace other npm packages such as `fs-extra`, `file`, and `node-dir`. `fstack` also extends `path` and `os`, for convenience.
 
-`fstack`'s implementation of `mkdir -p` and `rm -rf` are more efficient than those found in the `mkdirp` and `rimraf` packages, respectively.
+`fstack`'s implementations of `mkdir -p` and `rm -rf` are more efficient than those found in the `mkdirp` and `rimraf` packages, respectively.
 
 Read more on [why rimraf is a hack.](#rimraf)
 
@@ -316,5 +316,5 @@ fstack.json('./test.json', function(err, json) {
 ### fstack.append(path, callback)
 `fstack#append` behaves the same way as `fs#append`, but first performs a check to see whether the supplied file exists.
 
-<a name='rimraf'>## rimraf</a>
+## <a name='rimraf'>rimraf</a>
 The package `rimraf`, which is a popular implementation of `rm -rf` for `Node.js`, actually depends on making assumptions about files and directories. `rimraf` makes the smarter decision by assuming priority of files, but this means that for any call to `rimraf` where the path given contains a child directory, the kernel will return an error, and a new request to the system must be made. Such system calls are expensive. Instead, `fstack` uses its built in entity separator to intuitively `unlink` files and `rmdir` directories, after the children of those directories have been `unlink`'d or `rmdir`'d.
