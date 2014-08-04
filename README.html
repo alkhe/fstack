@@ -627,9 +627,7 @@ fstack.json('./test.json', function(err, json) {
     console.log(json.c);
 });
 
-/*
-{ d: 'e' }
-*/
+// { d: 'e' }
 </code></pre>
 
 <h3 id="fstackreadpath-callback"><a name="user-content-fstackreadpath-callback" href="#fstackreadpath-callback" class="headeranchor-link"  aria-hidden="true"><span class="headeranchor"></span></a>fstack.read(path, callback)</h3>
@@ -643,4 +641,4 @@ fstack.json('./test.json', function(err, json) {
 <h3 id="fstackappendpath-callback"><a name="user-content-fstackappendpath-callback" href="#fstackappendpath-callback" class="headeranchor-link"  aria-hidden="true"><span class="headeranchor"></span></a>fstack.append(path, callback)</h3>
 <p><code>fstack#append</code> behaves the same way as <code>fs#append</code>, but first performs a check to see whether the supplied file exists.</p>
 <h2 id="rimraf"><a name="user-content-rimraf" href="#rimraf" class="headeranchor-link"  aria-hidden="true"><span class="headeranchor"></span></a><a name='rimraf'></a>rimraf</h2>
-<p>The package <code>rimraf</code>, which is a popular implementation of <code>rm -rf</code> for <code>Node.js</code>, actually depends on making assumptions about files and directories. <code>rimraf</code> makes the smarter decision by assuming priority of files, but this also means that for any call to <code>rimraf</code> where the path given contains a child directory, the kernel will return an error, and a new request to the system must be made. Such system calls are expensive. Instead, <code>fstack</code> uses its built in entity separator to intuitively <code>unlink</code> files and <code>rmdir</code> directories, after the children of those directories have been <code>unlink</code>&lsquo;d or <code>rmdir</code>&lsquo;d.</p></body></html>
+<p>The package <code>rimraf</code>, which is a popular implementation of <code>rm -rf</code> for <code>Node.js</code>, actually depends on making assumptions about files and directories during the removal of entities. <code>rimraf</code> must choose between assuming that there is a file and assuming that there is a directory, and makes the smarter decision favoring the existence files, but this also means that for any call to <code>rimraf</code> where the path given contains at least one child directory, the kernel will return an error, and a new deletion request must be made. Such system calls are expensive. Instead, <code>fstack</code> uses its built-in entity separator to asynchronously <code>unlink</code> files and <code>rmdir</code> directories, after the children of those directories have been <code>unlink</code>&lsquo;d or <code>rmdir</code>&lsquo;d.</p></body></html>

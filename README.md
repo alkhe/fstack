@@ -292,9 +292,7 @@ fstack.json('./test.json', function(err, json) {
     console.log(json.c);
 });
 
-/*
-{ d: 'e' }
-*/
+// { d: 'e' }
 ```
 
 ### fstack.read(path, callback)
@@ -317,4 +315,4 @@ fstack.json('./test.json', function(err, json) {
 `fstack#append` behaves the same way as `fs#append`, but first performs a check to see whether the supplied file exists.
 
 ## <a name='rimraf'></a>rimraf
-The package `rimraf`, which is a popular implementation of `rm -rf` for `Node.js`, actually depends on making assumptions about files and directories. `rimraf` makes the smarter decision by assuming priority of files, but this also means that for any call to `rimraf` where the path given contains a child directory, the kernel will return an error, and a new request to the system must be made. Such system calls are expensive. Instead, `fstack` uses its built in entity separator to intuitively `unlink` files and `rmdir` directories, after the children of those directories have been `unlink`'d or `rmdir`'d.
+The package `rimraf`, which is a popular implementation of `rm -rf` for `Node.js`, actually depends on making assumptions about files and directories during the removal of entities. `rimraf` must choose between assuming that there is a file and assuming that there is a directory, and makes the smarter decision favoring the existence files, but this also means that for any call to `rimraf` where the path given contains at least one child directory, the kernel will return an error, and a new deletion request must be made. Such system calls are expensive. Instead, `fstack` uses its built-in entity separator to asynchronously `unlink` files and `rmdir` directories, after the children of those directories have been `unlink`'d or `rmdir`'d.

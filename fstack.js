@@ -5,7 +5,6 @@
 		os = require('os'),
 		constants = require('constants'),
 		async = require('async'),
-		_ = require('lodash'),
 		statMode = function(mode) {
 			switch (mode) {
 				case constants.S_IFREG:
@@ -25,9 +24,71 @@
 				default:
 					return 'unknown';
 			}
+		},
+		objectTypes = {
+			'boolean': false,
+			'function': true,
+			'object': true,
+			'number': false,
+			'string': false,
+			'undefined': false
+		},
+		reNative = RegExp('^' +
+			String(toString)
+			.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+			.replace(/toString| for [^\]]+/g, '.*?') + '$'
+		),
+		isObject = function(value) {
+			return !!(value && objectTypes[typeof value]);
+		},
+		isNative = function(value) {
+			return typeof value == 'function' && reNative.test(value);
+		},
+		nativeKeys = isNative(nativeKeys = Object.keys) && nativeKeys,
+		shimKeys = function(object) {
+			var index, iterable = object, result = [];
+			if (!iterable) return result;
+			if (!(objectTypes[typeof object])) return result;
+			for (index in iterable) {
+				if (hasOwnProperty.call(iterable, index)) {
+					result.push(index);
+				}
+			}
+			return result;
+		}
+		keys = !nativeKeys ? shimKeys : function(object) {
+			if (!isObject(object)) {
+				return [];
+			}
+			return nativeKeys(object);
 		};
 
-	_.extend(fstack, {
+	(function(object, source, guard) {
+		var index, iterable = object, result = iterable;
+		if (!iterable) return result;
+		var args = arguments,
+		argsIndex = 0,
+		argsLength = typeof guard === 'number' ? 2 : args.length;
+		if (argsLength > 3 && typeof args[argsLength - 2] === 'function') {
+			var callback = baseCreateCallback(args[--argsLength - 1], args[argsLength--], 2);
+		}
+		else if (argsLength > 2 && typeof args[argsLength - 1] === 'function') {
+			callback = args[--argsLength];
+		}
+		while (++argsIndex < argsLength) {
+			iterable = args[argsIndex];
+			if (iterable && objectTypes[typeof iterable]) {
+				var ownIndex = -1,
+				ownProps = objectTypes[typeof iterable] && keys(iterable),
+				length = ownProps ? ownProps.length : 0;
+				while (++ownIndex < length) {
+					index = ownProps[ownIndex];
+					result[index] = callback ? callback(result[index], iterable[index]) : iterable[index];
+				}
+			}
+		}
+		return result;
+	})(fstack, {
 		checkFile: function(path, callback) {
 			fs.stat(path, function(err, stat) {
 				if (stat && !stat.isDirectory()) {
