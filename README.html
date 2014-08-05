@@ -386,12 +386,14 @@ td:not(.linenos) .linenodiv { padding: 0 !important; }
 <h2 id="usage"><a name="user-content-usage" href="#usage" class="headeranchor-link"  aria-hidden="true"><span class="headeranchor"></span></a>Usage</h2>
 <p><code>var fstack = require('fstack');</code></p>
 <h2 id="benchmark-as-of-0218"><a name="user-content-benchmark-as-of-0218" href="#benchmark-as-of-0218" class="headeranchor-link"  aria-hidden="true"><span class="headeranchor"></span></a>Benchmark (As of 0.2.18)</h2>
-<pre><code>mkdirp 0 s, 9.342 ms
-fstack 0 s, 6.258 ms
+<pre><code>i in {0..99} `mkdir -p (i)\(i * 2)`
+mkdirp 0 s, 9.906 ms
+fstack 0 s, 3.743 ms
 </code></pre>
 
-<pre><code>rimraf 0 s, 24.729 ms
-fstack 0 s, 17.393 ms
+<pre><code>i in {0..99} `rm -rf i`
+rimraf 0 s, 23.996 ms
+fstack 0 s, 16.413 ms
 </code></pre>
 
 <h2 id="documentation"><a name="user-content-documentation" href="#documentation" class="headeranchor-link"  aria-hidden="true"><span class="headeranchor"></span></a>Documentation</h2>

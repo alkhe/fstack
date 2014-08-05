@@ -21,13 +21,15 @@ Read more on [why rimraf is a hack.](#rimraf)
 
 ## Benchmark (As of 0.2.18)
 ```
-mkdirp 0 s, 9.342 ms
-fstack 0 s, 6.258 ms
+i in {0..99} `mkdir -p (i)\(i * 2)`
+mkdirp 0 s, 9.906 ms
+fstack 0 s, 3.743 ms
 ```
 
 ```
-rimraf 0 s, 24.729 ms
-fstack 0 s, 17.393 ms
+i in {0..99} `rm -rf i`
+rimraf 0 s, 23.996 ms
+fstack 0 s, 16.413 ms
 ```
 
 ## Documentation
