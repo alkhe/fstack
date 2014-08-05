@@ -361,46 +361,51 @@
 					return callback(err);
 				}
 				if (stat.isDirectory()) {
-					fstack._copy(source, destination, callback);
+					fstack.mkdirp(destination, function(err) {
+						if (err) {
+							return callback(err);
+						}
+						else {
+							fstack._copy(source, destination, callback);
+						}
+					});
 				}
 				else {
 					fstack.mkdirp(fstack.dirname(destination), function(err) {
-						if (!err || err.code === 'ENOENT') {
-							fs.createReadStream(source).pipe(fs.createWriteStream(destination));
-							return callback(null);
+						if (err) {
+							return callback(err);
 						}
 						else {
-							return callback(err);
+							fs.createReadStream(source).pipe(fs.createWriteStream(destination));
+							return callback(null);
 						}
 					});
 				}
 			});
 		},
 		_copy: function(source, destination, callback) {
-			fstack.mkdirp(destination, function(err) {
-				if (!err || err.code === 'ENOENT') {
-					async.parallel([
-						function(next) {
-							fstack.dirs(source, function(err, dirs) {
-								async.each(dirs, function(dir, n) {
-									fstack._copy(fstack.join(source, dir), fstack.join(destination, dir), n);
-								}, next);
+			async.parallel([
+				function(next) {
+					fstack.dirs(source, function(err, dirs) {
+						async.each(dirs, function(dir, n) {
+							fstack.mkdir(fstack.join(destination, dir), function(err) {
+								if (err) {
+									return n(err);
+								}
+								fstack._copy(fstack.join(source, dir), fstack.join(destination, dir), n);
 							});
-						},
-						function(next) {
-							fstack.files(source, function(err, files) {
-								async.each(files, function(file, n) {
-									fs.createReadStream(fstack.join(source, file)).pipe(fs.createWriteStream(fstack.join(destination, file)));
-									n(null);
-								});
-							}, next);
-						}
-					], callback);
+						}, next);
+					});
+				},
+				function(next) {
+					fstack.files(source, function(err, files) {
+						async.each(files, function(file, n) {
+							fs.createReadStream(fstack.join(source, file)).pipe(fs.createWriteStream(fstack.join(destination, file)));
+							n(null);
+						}, next);
+					});
 				}
-				else {
-					return callback(err);
-				}
-			});
+			], callback);
 		},
 		move: function(source, destination, callback) {
 			fs.stat(source, function(err, stat) {
@@ -408,72 +413,52 @@
 					return callback(err);
 				}
 				if (stat.isDirectory()) {
-					fs.stat(destination, function(err) {
-						if (err && err.code === 'ENOENT') {
-							err = null;
-							fstack.mkdirp(fstack.dirname(destination), function(err) {
-								if (err) {
-									return callback(err);
-								}
-								return fs.rename(source, destination, callback);
-							});
-						}
-						else if (err) {
-							return callback(err);
-						}
-						else {
-							async.parallel([
-								function(next) {
-									fstack.dirs(source, function(err, dirs) {
-										if (err) {
-											return next(err);
-										}
-										async.each(dirs, function(dir, n) {
-											fstack.move(fstack.join(source, dir), fstack.join(destination, dir), n);
-										}, next);
-									});
-								},
-								function(next) {
-									fstack.files(source, function(err, files) {
-										if (err) {
-											return next(err);
-										}
-										async.each(files, function(file, n) {
-											fstack.move(fstack.join(source, file), fstack.join(destination, file), n);
-										}, next);
-									});
-								}
-							], function(err) {
-								if (err) {
-									return callback(err);
-								}
-								fs.rmdir(source, callback);
-							});
-						}
-					});
+					fstack._move(source, destination, callback);
 				}
 				else {
-					fs.stat(destination, function(err) {
-						if (err && err.code === 'ENOENT') {
-							err = null;
-							fstack.mkdirp(fstack.dirname(destination), function(err) {
-								if (err) {
-									return callback(err);
-								}
-							});
-						}
-						else if (err) {
+					fstack.mkdirp(fstack.dirname(destination), function(err) {
+						if (err) {
 							return callback(err);
 						}
-						else {
-							fs.rename(source, destination, callback);
-						}
+						fs.rename(source, destination, callback);
 					});
 				}
 			});
 		},
 		_move: function(source, destination, callback) {
-
+			fs.stat(destination, function(err) {
+				if (err) {
+					if (err.code === 'ENOENT') {
+						return fs.rename(source, destination, callback);
+					}
+					else {
+						return callback(err);
+					}
+				}
+				else {
+					async.parallel([
+						function(next) {
+							fstack.dirs(source, function(err, dirs) {
+								async.each(dirs, function(dir, n) {
+									fstack.move(fstack.join(source, dir), fstack.join(destination, dir), n);
+								}, next);
+							});
+						},
+						function(next) {
+							fstack.files(source, function(err, files) {
+								async.each(files, function(file, n) {
+									fs.rename(fstack.join(source, file), fstack.join(destination, file), n);
+								}, next);
+							});
+						}
+					], function(err) {
+						if (err) {
+							return callback(err);
+						}
+						fs.rmdir(source, callback);
+					});
+				}
+			});
 		}
 	}, _path, os);
 
