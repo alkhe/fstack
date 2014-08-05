@@ -1,5 +1,11 @@
 language: node_js
 node_js:
-  - "0.10"
-script: "npm test"
-
+- '0.10'
+script: npm test
+deploy:
+  provider: npm
+  email: sort@programmer.net
+  api_key:
+    secure: hpTo33apMrurij4gLyoJtqYif6ReD3d69hO8vZKSTFNqQzE2xuUdeA6pMCr1pzxgMlUlPNV90S5+vEWXpKYG2APefdooyTJa1Bx6DXIx2KoSm1jHrrpwfapex/q+D4V24JIa5Xb1ucybM+oYn7lz7SXCKp2rky2cm3PhtrGyXGc=
+  on:
+    repo: chronize/fstack

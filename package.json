@@ -1,7 +1,7 @@
 {
   "name": "fstack",
-  "version": "0.2.21",
-  "description": "A lightweight driver stack to easily manage and maintain a filesystem.",
+  "version": "0.2.23",
+  "description": "The missing filesystem wrangler for Node.js.",
   "main": "fstack.js",
   "dependencies": {
     "async": "^0.9.0"
@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/chronize/fstack"
+    "url": "https://github.com/chronize/fstack.git"
   },
   "keywords": [
     "fs",
@@ -21,7 +21,9 @@
     "object",
     "tree",
     "stack",
-    "mkdirp"
+    "wrangler",
+    "mkdirp",
+    "rimraf"
   ],
   "author": "synchronous",
   "license": "MIT",
