@@ -35,6 +35,13 @@
 		},
 		objectProto = Object.prototype,
 		toString = objectProto.toString,
+		identity = function(value) {
+			return value;
+		},
+		support = {
+			funcDecomp: !isNative(context.WinRTError) && reThis.test(runInContext),
+			funcNames: typeof Function.name == 'string'
+		},
 		reNative = new RegExp('^' +
 			String(toString)
 			.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
