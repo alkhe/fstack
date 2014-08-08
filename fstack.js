@@ -39,7 +39,6 @@
 			return value;
 		},
 		support = {
-			funcDecomp: !isNative(context.WinRTError) && reThis.test(runInContext),
 			funcNames: typeof Function.name == 'string'
 		},
 		reNative = new RegExp('^' +
