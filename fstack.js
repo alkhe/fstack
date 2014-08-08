@@ -33,7 +33,7 @@
 			'string': false,
 			'undefined': false
 		},
-		reNative = RegExp('^' +
+		reNative = new RegExp('^' +
 			String(toString)
 			.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 			.replace(/toString| for [^\]]+/g, '.*?') + '$'
@@ -42,20 +42,24 @@
 			return !!(value && objectTypes[typeof value]);
 		},
 		isNative = function(value) {
-			return typeof value == 'function' && reNative.test(value);
+			return typeof value === 'function' && reNative.test(value);
 		},
 		nativeKeys = isNative(nativeKeys = Object.keys) && nativeKeys,
 		shimKeys = function(object) {
 			var index, iterable = object, result = [];
-			if (!iterable) return result;
-			if (!(objectTypes[typeof object])) return result;
+			if (!iterable) {
+				return result;
+			}
+			if (!(objectTypes[typeof object])){
+				return result;
+			}
 			for (index in iterable) {
 				if (hasOwnProperty.call(iterable, index)) {
 					result.push(index);
 				}
 			}
 			return result;
-		}
+		},
 		keys = !nativeKeys ? shimKeys : function(object) {
 			if (!isObject(object)) {
 				return [];
@@ -68,9 +72,10 @@
 		if (!iterable) return result;
 		var args = arguments,
 		argsIndex = 0,
+		callback,
 		argsLength = typeof guard === 'number' ? 2 : args.length;
 		if (argsLength > 3 && typeof args[argsLength - 2] === 'function') {
-			var callback = baseCreateCallback(args[--argsLength - 1], args[argsLength--], 2);
+			callback = baseCreateCallback(args[--argsLength - 1], args[argsLength--], 2);
 		}
 		else if (argsLength > 2 && typeof args[argsLength - 1] === 'function') {
 			callback = args[--argsLength];
