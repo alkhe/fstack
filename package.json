@@ -1,6 +1,6 @@
 {
   "name": "fstack",
-  "version": "0.2.24",
+  "version": "0.2.25",
   "description": "The missing filesystem wrangler for Node.js.",
   "main": "fstack.js",
   "dependencies": {
